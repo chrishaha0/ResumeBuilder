@@ -1,4 +1,4 @@
-# 📝 履歷產生器 (Preschool Teacher Resume Builder)
+# 📝 履歷產生器 (Resume Builder)
 
 一款專為長輩設計的線上履歷編輯工具。無需安裝任何軟體，只需打開網頁即可輕鬆填寫、即時預覽，並支援一鍵匯出為 PDF 或 Word (DOCX) 檔案。
 
