@@ -40,7 +40,7 @@
         }
 
         /* 隱藏捲軸但可滾動，讓畫面更乾淨 */
-        ::-webkit-scrollbar { width: 12px; }
+        ::-webkit-scrollbar { width: 12px; height: 12px; }
         ::-webkit-scrollbar-track { background: #E8E4D9; }
         ::-webkit-scrollbar-thumb { background: #5C5C5C; border-radius: 6px; }
         
@@ -56,9 +56,31 @@
             color: #1A1A1A;
         }
         
+        /* 捲軸容器，支援手機端自然滑動 */
+        .preview-scroll-area {
+            width: 100%;
+            overflow: auto; /* 允許垂直與水平捲動 */
+            flex: 1; /* 填滿螢幕剩餘高度 */
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* 手機版：向左對齊，防止捲軸切斷左側內容 */
+        @media (max-width: 768px) {
+            .preview-scroll-area {
+                justify-content: flex-start;
+                padding: 10px;
+            }
+        }
+
         .preview-wrapper {
             transform-origin: top center;
-            padding-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .preview-wrapper {
+                transform-origin: top left; /* 配合向左對齊，縮放原點改為左上 */
+            }
         }
 
         /* 履歷內部排版樣式 (字體放大，確保長輩印出來也好看) */
@@ -237,10 +259,10 @@
     </div>
 
     <!-- ==================== 視圖 2：預覽與下載模式 ==================== -->
-    <div id="view-preview" class="hidden flex-col items-center min-h-screen bg-senior-gray pb-20">
+    <div id="view-preview" class="hidden flex-col h-screen bg-senior-gray overflow-hidden">
         
         <!-- 頂部巨大控制列 -->
-        <div class="sticky top-0 w-full bg-white shadow-xl z-50 p-4 border-b-4 border-gray-300">
+        <div class="shrink-0 w-full bg-white shadow-xl z-50 p-4 border-b-4 border-gray-300">
             <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-4 justify-center">
                 <button onclick="toggleView('edit')" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 bg-[#5C5C5C] text-white text-[24px] font-bold rounded-xl shadow-md hover:bg-gray-700 transition-colors border-2 border-gray-700">
                     ⬅️ 返回修改資料
@@ -254,10 +276,11 @@
             </div>
         </div>
 
-        <!-- 履歷 A4 預覽畫面 -->
-        <div class="preview-wrapper w-full flex justify-center px-4" id="scale-wrapper">
-            <div id="resume-preview" class="a4-container resume-content">
-                
+        <!-- 履歷 A4 預覽畫面 (具備捲軸) -->
+        <div class="preview-scroll-area">
+            <div class="preview-wrapper" id="scale-wrapper">
+                <div id="resume-preview" class="a4-container resume-content">
+                    
                 <div id="preview-sec-basic">
                     <h1 id="out-name">陳小文</h1>
                     <div class="contact-info">
@@ -315,6 +338,7 @@
                 </div>
 
             </div>
+        </div>
         </div>
     </div>
 
@@ -439,24 +463,36 @@
             });
         });
 
-        // --- 縮放邏輯 (確保預覽畫面在手機上也能全覽) ---
+        // --- 縮放邏輯 (長輩友善版：限制縮小比例並支援捲動) ---
         function adjustScale() {
             const wrapper = document.getElementById('scale-wrapper');
             const previewView = document.getElementById('view-preview');
             
             // 只有在預覽模式下才計算
-            if (previewView.style.display === 'none' || wrapper.offsetWidth === 0) return; 
+            if (previewView.style.display === 'none' || !wrapper || wrapper.offsetWidth === 0) return; 
 
             const containerWidth = wrapper.parentElement.clientWidth;
-            const a4Width = 794; // 210mm 轉換約等於
+            const a4Width = 794; // 210mm 轉換約等於 794px
             
             if (containerWidth < a4Width + 40) {
-                const scale = (containerWidth - 20) / a4Width;
-                wrapper.style.transform = `scale(${scale})`;
-                wrapper.style.marginBottom = `-${297 * 3.78 * (1 - scale)}px`;
+                let scale = (containerWidth - 20) / a4Width;
+                
+                // 【長輩友善更新】手機上不要縮得太小，最少維持 0.85 倍，確保字體夠大，剩下的用捲軸滾動看！
+                if (window.innerWidth <= 768) {
+                    scale = Math.max(scale, 0.85); 
+                    wrapper.style.transform = `scale(${scale})`;
+                    // 修剪因 scale 產生的虛擬佔位留白 (負 margin)
+                    wrapper.style.marginBottom = `${297 * 3.78 * (scale - 1)}px`;
+                    wrapper.style.marginRight = `${a4Width * (scale - 1)}px`;
+                } else {
+                    wrapper.style.transform = `scale(${scale})`;
+                    wrapper.style.marginBottom = `-${297 * 3.78 * (1 - scale)}px`;
+                    wrapper.style.marginRight = '0';
+                }
             } else {
                 wrapper.style.transform = 'scale(1)';
                 wrapper.style.marginBottom = '0';
+                wrapper.style.marginRight = '0';
             }
         }
 
