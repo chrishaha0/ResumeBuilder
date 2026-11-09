@@ -32,9 +32,13 @@
     
     <style>
         /* 全域基礎字體放大 */
+        :root {
+            --scale: 1; /* 字體縮放變數 */
+        }
+        
         body {
             font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
-            font-size: 20px;
+            font-size: calc(20px * var(--scale));
             color: #1A1A1A;
             background-color: #F4F1EA;
         }
@@ -92,10 +96,18 @@
         
         /* 輸入框共用大樣式 */
         .input-large {
-            width: 100%; border: 2px solid #5C5C5C; border-radius: 12px; padding: 16px; font-size: 20px; background-color: #FAFAFA; transition: border-color 0.2s;
+            width: 100%; border: 2px solid #5C5C5C; border-radius: 12px; padding: calc(16px * var(--scale)); font-size: calc(20px * var(--scale)); background-color: #FAFAFA; transition: border-color 0.2s;
         }
         .input-large:focus { border-color: #385723; outline: none; background-color: #FFFFFF; box-shadow: 0 0 0 3px rgba(56, 87, 35, 0.2); }
-        .label-large { display: block; font-size: 22px; font-weight: bold; color: #1A1A1A; margin-bottom: 8px; }
+        .label-large { display: block; font-size: calc(22px * var(--scale)); font-weight: bold; color: #1A1A1A; margin-bottom: 8px; }
+
+        /* 動態縮放 Tailwind 字體類別 (覆蓋原有設定以支援字體調整按鈕) */
+        .text-\\[20px\\] { font-size: calc(20px * var(--scale)) !important; }
+        .text-\\[22px\\] { font-size: calc(22px * var(--scale)) !important; }
+        .text-\\[24px\\] { font-size: calc(24px * var(--scale)) !important; }
+        .text-\\[28px\\] { font-size: calc(28px * var(--scale)) !important; }
+        .text-\\[32px\\] { font-size: calc(32px * var(--scale)) !important; }
+        .text-\\[40px\\] { font-size: calc(40px * var(--scale)) !important; }
     </style>
 </head>
 <body class="min-h-screen relative">
@@ -108,7 +120,15 @@
             <p class="text-[20px] mt-2 opacity-90">請在下方填寫您的資料，完成後點擊最下方的按鈕</p>
         </div>
 
-        <form class="max-w-4xl mx-auto p-4 md:p-8 space-y-8" id="resume-form">
+        <!-- 字體大小調整列 (固定在頂部) -->
+        <div class="bg-white border-b-2 border-gray-300 shadow-sm sticky top-0 z-30 flex justify-center items-center gap-2 md:gap-4 py-3">
+            <span class="text-senior-text font-bold text-[20px] mr-2">表單字體：</span>
+            <button type="button" onclick="changeUiFontSize(-0.1)" class="w-12 h-12 bg-senior-lightGray text-senior-text font-bold rounded-full text-[20px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray focus:outline-none focus:ring-4 focus:ring-senior-green">A-</button>
+            <button type="button" onclick="changeUiFontSize(0)" class="px-4 h-12 bg-[#E8E4D9] text-senior-text font-bold rounded-xl text-[20px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray focus:outline-none focus:ring-4 focus:ring-senior-green">標準</button>
+            <button type="button" onclick="changeUiFontSize(0.1)" class="w-12 h-12 bg-senior-lightGray text-senior-text font-bold rounded-full text-[24px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray focus:outline-none focus:ring-4 focus:ring-senior-green">A+</button>
+        </div>
+
+        <form class="max-w-4xl mx-auto p-4 md:p-8 space-y-8 mt-2" id="resume-form">
             
             <!-- 1. 基本資料 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
@@ -355,6 +375,21 @@
     </div>
 
     <script>
+        // --- 介面字體縮放邏輯 (新增) ---
+        let uiScale = 1;
+        function changeUiFontSize(delta) {
+            if (delta === 0) {
+                uiScale = 1; // 恢復標準大小
+            } else {
+                uiScale += delta;
+                // 限制縮放範圍，避免過小看不見或過大導致跑版
+                if (uiScale < 0.8) uiScale = 0.8;
+                if (uiScale > 1.8) uiScale = 1.8;
+            }
+            // 透過更新 CSS 變數，瞬間套用到整個表單的字體與留白
+            document.documentElement.style.setProperty('--scale', uiScale);
+        }
+
         // --- 視圖切換邏輯 ---
         function toggleView(viewName) {
             const editView = document.getElementById('view-edit');
