@@ -267,6 +267,17 @@
                 <button onclick="toggleView('edit')" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 bg-[#5C5C5C] text-white text-[24px] font-bold rounded-xl shadow-md hover:bg-gray-700 transition-colors border-2 border-gray-700">
                     ⬅️ 返回修改資料
                 </button>
+                
+                <!-- 新增：明確的放大與縮小按鈕 -->
+                <div class="flex gap-2 flex-1 md:flex-none">
+                    <button onclick="zoomOut()" class="flex-1 flex items-center justify-center gap-2 px-4 py-4 bg-senior-lightGray text-senior-text text-[24px] font-bold rounded-xl shadow-md hover:bg-gray-300 transition-colors border-2 border-senior-gray">
+                        🔍 縮小
+                    </button>
+                    <button onclick="zoomIn()" class="flex-1 flex items-center justify-center gap-2 px-4 py-4 bg-senior-lightGray text-senior-text text-[24px] font-bold rounded-xl shadow-md hover:bg-gray-300 transition-colors border-2 border-senior-gray">
+                        🔍 放大
+                    </button>
+                </div>
+
                 <button onclick="downloadPDF()" class="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-4 bg-senior-brown text-white text-[24px] font-bold rounded-xl shadow-md hover:bg-senior-brownHover transition-colors border-2 border-senior-brownHover">
                     📄 下載列印 (PDF)
                 </button>
@@ -463,7 +474,43 @@
             });
         });
 
-        // --- 縮放邏輯 (長輩友善版：限制縮小比例並支援捲動) ---
+        // --- 縮放邏輯 (長輩友善版：手動控制取代純自動) ---
+        let currentScale = 1;
+
+        function applyScale() {
+            const wrapper = document.getElementById('scale-wrapper');
+            const previewView = document.getElementById('view-preview');
+            if (previewView.style.display === 'none' || !wrapper) return;
+            
+            const a4Width = 794;
+            wrapper.style.transform = `scale(${currentScale})`;
+            
+            // 動態修剪因 scale 產生的虛擬佔位留白，確保捲軸長度正確
+            if (currentScale <= 1) {
+                wrapper.style.marginBottom = `-${297 * 3.78 * (1 - currentScale)}px`;
+                if (window.innerWidth <= 768) {
+                    wrapper.style.marginRight = `${a4Width * (currentScale - 1)}px`;
+                } else {
+                    wrapper.style.marginRight = '0';
+                }
+            } else {
+                wrapper.style.marginBottom = `${297 * 3.78 * (currentScale - 1)}px`;
+                wrapper.style.marginRight = `${a4Width * (currentScale - 1)}px`;
+            }
+        }
+
+        function zoomIn() {
+            currentScale += 0.15;
+            if (currentScale > 2.5) currentScale = 2.5; // 設定放大上限
+            applyScale();
+        }
+
+        function zoomOut() {
+            currentScale -= 0.15;
+            if (currentScale < 0.4) currentScale = 0.4; // 設定縮小下限
+            applyScale();
+        }
+
         function adjustScale() {
             const wrapper = document.getElementById('scale-wrapper');
             const previewView = document.getElementById('view-preview');
@@ -474,34 +521,29 @@
             const containerWidth = wrapper.parentElement.clientWidth;
             const a4Width = 794; // 210mm 轉換約等於 794px
             
+            // 首次進入預覽時，給予一個適當的預設比例
             if (containerWidth < a4Width + 40) {
-                let scale = (containerWidth - 20) / a4Width;
-                
-                // 【長輩友善更新】手機上不要縮得太小，最少維持 0.85 倍，確保字體夠大，剩下的用捲軸滾動看！
+                currentScale = (containerWidth - 20) / a4Width;
                 if (window.innerWidth <= 768) {
-                    scale = Math.max(scale, 0.85); 
-                    wrapper.style.transform = `scale(${scale})`;
-                    // 修剪因 scale 產生的虛擬佔位留白 (負 margin)
-                    wrapper.style.marginBottom = `${297 * 3.78 * (scale - 1)}px`;
-                    wrapper.style.marginRight = `${a4Width * (scale - 1)}px`;
-                } else {
-                    wrapper.style.transform = `scale(${scale})`;
-                    wrapper.style.marginBottom = `-${297 * 3.78 * (1 - scale)}px`;
-                    wrapper.style.marginRight = '0';
+                    currentScale = Math.max(currentScale, 0.85); // 手機預設不要太小
                 }
             } else {
-                wrapper.style.transform = 'scale(1)';
-                wrapper.style.marginBottom = '0';
-                wrapper.style.marginRight = '0';
+                currentScale = 1;
             }
+            applyScale();
         }
 
-        window.addEventListener('resize', adjustScale);
+        // 移除 window.resize 自動縮放，避免打斷長輩手動調整好的比例
+        // window.addEventListener('resize', adjustScale);
 
         // --- 匯出 PDF ---
         function downloadPDF() {
             const element = document.getElementById('resume-preview');
-            document.getElementById('scale-wrapper').style.transform = 'scale(1)';
+            const originalScale = currentScale; // 記住使用者目前的縮放比例
+            
+            // 下載前強制恢復 1 倍大小以確保 PDF 畫質與排版
+            currentScale = 1;
+            applyScale(); 
             
             const opt = {
                 margin:       0,
@@ -512,7 +554,9 @@
             };
 
             html2pdf().set(opt).from(element).save().then(() => {
-                adjustScale();
+                // 下載完成後，恢復長輩原本設定的縮放比例
+                currentScale = originalScale;
+                applyScale();
             });
         }
 
