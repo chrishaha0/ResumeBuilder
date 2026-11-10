@@ -12,15 +12,15 @@
                 extend: {
                     colors: {
                         senior: {
-                            bg: '#F4F1EA',       // 柔和米黃背景
-                            card: '#FFFFFF',     // 卡片純白
-                            text: '#1A1A1A',     // 高對比深黑字體
-                            green: '#385723',    // 深苔蘚綠 (主按鈕、標題)
+                            bg: '#F4F1EA',       
+                            card: '#FFFFFF',     
+                            text: '#1A1A1A',     
+                            green: '#385723',    
                             greenHover: '#2A421A',
-                            brown: '#5C4033',    // 深暖棕色 (次按鈕)
+                            brown: '#5C4033',    
                             brownHover: '#4A3329',
-                            gray: '#5C5C5C',     // 深灰色 (框線與次要文字)
-                            lightGray: '#E8E4D9' // 淺卡其 (區塊背景)
+                            gray: '#5C5C5C',     
+                            lightGray: '#E8E4D9' 
                         }
                     }
                 }
@@ -31,10 +31,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        /* 全域基礎字體放大 */
-        :root {
-            --scale: 1; /* 字體縮放變數 */
-        }
+        :root { --scale: 1; }
         
         body {
             font-family: "Microsoft JhengHei", "PingFang TC", sans-serif;
@@ -43,12 +40,10 @@
             background-color: #F4F1EA;
         }
 
-        /* 隱藏捲軸但可滾動，讓畫面更乾淨 */
         ::-webkit-scrollbar { width: 12px; height: 12px; }
         ::-webkit-scrollbar-track { background: #E8E4D9; }
         ::-webkit-scrollbar-thumb { background: #5C5C5C; border-radius: 6px; }
         
-        /* A4 紙張預覽樣式 (模擬真實紙張，內容也隨之放大以利閱讀) */
         .a4-container {
             width: 210mm;
             min-height: 297mm;
@@ -60,17 +55,15 @@
             color: #1A1A1A;
         }
         
-        /* 捲軸容器，支援手機端自然滑動 */
         .preview-scroll-area {
             width: 100%;
-            overflow: auto; /* 允許垂直與水平捲動 */
-            flex: 1; /* 填滿螢幕剩餘高度 */
+            overflow: auto; 
+            flex: 1; 
             display: flex;
             justify-content: center;
             padding: 20px;
         }
 
-        /* 手機版：向左對齊，防止捲軸切斷左側內容 */
         @media (max-width: 768px) {
             .preview-scroll-area {
                 justify-content: flex-start;
@@ -78,30 +71,21 @@
             }
         }
 
-        .preview-wrapper {
-            transform-origin: top center;
-        }
-        @media (max-width: 768px) {
-            .preview-wrapper {
-                transform-origin: top left; /* 配合向左對齊，縮放原點改為左上 */
-            }
-        }
+        .preview-wrapper { transform-origin: top center; }
+        @media (max-width: 768px) { .preview-wrapper { transform-origin: top left; } }
 
-        /* 履歷內部排版樣式 (字體放大，確保長輩印出來也好看) */
         .resume-content h1 { font-size: 36px; font-weight: bold; border-bottom: 4px solid #385723; padding-bottom: 12px; margin-bottom: 24px; color: #1A1A1A; text-align: center; }
         .resume-content h2 { font-size: 24px; font-weight: bold; background-color: #E8E4D9; color: #1A1A1A; padding: 12px 16px; margin-top: 32px; margin-bottom: 16px; border-radius: 8px; }
         .resume-content p { margin-bottom: 12px; line-height: 1.8; font-size: 18px; }
         .resume-content .contact-info { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-bottom: 32px; font-size: 18px; color: #333333; font-weight: bold; }
         .resume-content .section-content { white-space: pre-wrap; font-size: 18px; line-height: 1.8; margin-left: 10px; }
         
-        /* 輸入框共用大樣式 */
         .input-large {
             width: 100%; border: 2px solid #5C5C5C; border-radius: 12px; padding: calc(16px * var(--scale)); font-size: calc(20px * var(--scale)); background-color: #FAFAFA; transition: border-color 0.2s;
         }
         .input-large:focus { border-color: #385723; outline: none; background-color: #FFFFFF; box-shadow: 0 0 0 3px rgba(56, 87, 35, 0.2); }
         .label-large { display: block; font-size: calc(22px * var(--scale)); font-weight: bold; color: #1A1A1A; margin-bottom: 8px; }
 
-        /* 動態縮放 Tailwind 字體類別 (覆蓋原有設定以支援字體調整按鈕) */
         .text-\\[20px\\] { font-size: calc(20px * var(--scale)) !important; }
         .text-\\[22px\\] { font-size: calc(22px * var(--scale)) !important; }
         .text-\\[24px\\] { font-size: calc(24px * var(--scale)) !important; }
@@ -113,29 +97,27 @@
 <body class="min-h-screen relative">
 
     <!-- ==================== 視圖 1：編輯表單模式 ==================== -->
-    <div id="view-edit" class="w-full pb-32">
-        <!-- 頂部大標題 -->
+    <div id="view-edit" class="w-full flex flex-col min-h-screen">
         <div class="bg-senior-green text-white p-6 shadow-md text-center">
             <h1 class="text-[32px] md:text-[40px] font-bold">幼教老師履歷生成器</h1>
             <p class="text-[20px] mt-2 opacity-90">請在下方填寫您的資料，完成後點擊最下方的按鈕</p>
         </div>
 
-        <!-- 字體大小調整列 (固定在頂部) -->
         <div class="bg-white border-b-2 border-gray-300 shadow-sm sticky top-0 z-30 flex justify-center items-center gap-2 md:gap-4 py-3">
             <span class="text-senior-text font-bold text-[20px] mr-2">表單字體：</span>
-            <button type="button" onclick="changeUiFontSize(-0.1)" class="w-12 h-12 bg-senior-lightGray text-senior-text font-bold rounded-full text-[20px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray focus:outline-none focus:ring-4 focus:ring-senior-green">A-</button>
-            <button type="button" onclick="changeUiFontSize(0)" class="px-4 h-12 bg-[#E8E4D9] text-senior-text font-bold rounded-xl text-[20px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray focus:outline-none focus:ring-4 focus:ring-senior-green">標準</button>
-            <button type="button" onclick="changeUiFontSize(0.1)" class="w-12 h-12 bg-senior-lightGray text-senior-text font-bold rounded-full text-[24px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray focus:outline-none focus:ring-4 focus:ring-senior-green">A+</button>
+            <button type="button" onclick="changeUiFontSize(-0.1)" class="w-12 h-12 bg-senior-lightGray text-senior-text font-bold rounded-full text-[20px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray">A-</button>
+            <button type="button" onclick="changeUiFontSize(0)" class="px-4 h-12 bg-[#E8E4D9] text-senior-text font-bold rounded-xl text-[20px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray">標準</button>
+            <button type="button" onclick="changeUiFontSize(0.1)" class="w-12 h-12 bg-senior-lightGray text-senior-text font-bold rounded-full text-[24px] shadow hover:bg-gray-300 transition-colors border-2 border-senior-gray">A+</button>
         </div>
 
-        <form class="max-w-4xl mx-auto p-4 md:p-8 space-y-8 mt-2" id="resume-form">
+        <form class="max-w-4xl mx-auto p-4 md:p-8 space-y-8 mt-2 flex-1 pb-[80px]" id="resume-form">
             
             <!-- 1. 基本資料 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" id="in-title-basic" data-bind-title="out-title-basic" value="一、基本資料" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
-                    <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300 transition-colors">
-                        <input type="checkbox" id="chk-basic" data-toggle="preview-sec-basic" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                    <input type="text" id="in-title-basic" data-bind-title="out-title-basic" value="一、基本資料" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 w-full md:w-2/3 p-0">
+                    <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
+                        <input type="checkbox" id="chk-basic" data-toggle="preview-sec-basic" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -164,9 +146,9 @@
             <!-- 2. 求職目標 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" id="in-title-objective" data-bind-title="out-title-objective" value="二、求職目標" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-objective" data-bind-title="out-title-objective" value="二、求職目標" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" id="chk-objective" data-toggle="preview-sec-objective" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-objective" data-toggle="preview-sec-objective" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -179,9 +161,9 @@
             <!-- 3. 學歷 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" id="in-title-education" data-bind-title="out-title-education" value="三、最高學歷" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-education" data-bind-title="out-title-education" value="三、最高學歷" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" id="chk-education" data-toggle="preview-sec-education" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-education" data-toggle="preview-sec-education" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -194,9 +176,9 @@
             <!-- 4. 專業證照 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" id="in-title-certs" data-bind-title="out-title-certs" value="四、專業證照" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-certs" data-bind-title="out-title-certs" value="四、專業證照" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" id="chk-certs" data-toggle="preview-sec-certs" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-certs" data-toggle="preview-sec-certs" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -212,9 +194,9 @@
             <!-- 5. 經歷 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" id="in-title-experience" data-bind-title="out-title-experience" value="五、工作 / 實習經歷" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-experience" data-bind-title="out-title-experience" value="五、工作 / 實習經歷" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" id="chk-experience" data-toggle="preview-sec-experience" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-experience" data-toggle="preview-sec-experience" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -235,9 +217,9 @@
             <!-- 6. 專長與技能 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" id="in-title-skills" data-bind-title="out-title-skills" value="六、專長與技能" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-skills" data-bind-title="out-title-skills" value="六、專長與技能" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" id="chk-skills" data-toggle="preview-sec-skills" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-skills" data-toggle="preview-sec-skills" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -249,30 +231,28 @@
                 </div>
             </section>
 
-            <!-- 7. 自傳 (動態區塊) -->
+            <!-- 7. 自傳 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" id="in-title-auto" data-bind-title="out-title-auto" value="七、個人自傳" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-auto" data-bind-title="out-title-auto" value="七、個人自傳" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" id="chk-auto" data-toggle="preview-sec-auto" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-auto" data-toggle="preview-sec-auto" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
                 
-                <div id="auto-sections-container" class="space-y-6">
-                    <!-- 動態自傳段落將會在這裡生成 -->
-                </div>
+                <div id="auto-sections-container" class="space-y-6"></div>
                 
-                <button type="button" id="btn-add-auto" class="mt-8 w-full py-5 text-[24px] font-bold bg-[#E8E4D9] text-senior-brown rounded-xl border-4 border-senior-brown border-dashed hover:bg-gray-200 transition-colors flex items-center justify-center gap-3">
+                <button type="button" id="btn-add-auto" class="mt-8 w-full py-5 text-[24px] font-bold bg-[#E8E4D9] text-senior-brown rounded-xl border-4 border-senior-brown border-dashed hover:bg-gray-200 flex items-center justify-center gap-3">
                     <b class="text-[32px] leading-none">+</b> 增加一段新的自傳內容
                 </button>
             </section>
 
         </form>
 
-        <!-- 固定在畫面最底部的超大「預覽與下載」按鈕 -->
-        <div class="fixed bottom-0 left-0 w-full bg-white border-t-4 border-gray-300 p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] z-40">
-            <button onclick="toggleView('preview')" class="w-full max-w-4xl mx-auto block py-5 bg-senior-green text-white text-[28px] md:text-[32px] font-bold rounded-2xl shadow-lg hover:bg-senior-greenHover transition-colors border-4 border-senior-greenHover">
+        <!-- 【修正排版】改用 sticky 黏在表單最底部，不受 Android 虛擬鍵盤干擾 -->
+        <div class="sticky bottom-0 left-0 w-full bg-white/95 backdrop-blur border-t-4 border-gray-300 p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.1)] z-40" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
+            <button onclick="toggleView('preview')" class="w-full max-w-4xl mx-auto block py-5 bg-senior-green text-white text-[28px] md:text-[32px] font-bold rounded-2xl shadow-lg border-4 border-senior-greenHover hover:bg-senior-greenHover">
                 🔍 預覽與下載履歷
             </button>
         </div>
@@ -281,14 +261,12 @@
     <!-- ==================== 視圖 2：預覽與下載模式 ==================== -->
     <div id="view-preview" class="hidden flex-col h-screen bg-senior-gray overflow-hidden relative">
         
-        <!-- 頂部精簡控制列 -->
         <div class="shrink-0 w-full bg-white shadow-md z-50 p-3 border-b-2 border-gray-300 flex justify-center md:justify-start">
-            <button onclick="toggleView('edit')" class="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#5C5C5C] text-white text-[22px] font-bold rounded-xl shadow-md hover:bg-gray-700 transition-colors border-2 border-gray-700">
+            <button onclick="toggleView('edit')" class="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-[#5C5C5C] text-white text-[22px] font-bold rounded-xl shadow-md border-2 border-gray-700">
                 ⬅️ 返回修改資料
             </button>
         </div>
 
-        <!-- 履歷 A4 預覽畫面 (具備捲軸) -->
         <div class="preview-scroll-area flex-1">
             <div class="preview-wrapper" id="scale-wrapper">
                 <div id="resume-preview" class="a4-container resume-content">
@@ -344,59 +322,46 @@
 
                 <div id="preview-sec-auto">
                     <h2 id="out-title-auto">七、個人自傳</h2>
-                    <div id="out-auto-container">
-                        <!-- 動態自傳段落預覽將在這裡生成 -->
-                    </div>
+                    <div id="out-auto-container"></div>
                 </div>
 
             </div>
         </div>
         </div>
 
-        <!-- 浮動放大縮小按鈕 (FAB) -->
-        <div class="absolute bottom-[100px] right-4 flex flex-col gap-4 z-40 md:right-8">
-            <button onclick="zoomIn()" class="w-16 h-16 bg-white text-senior-text text-[32px] font-bold rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.4)] border-2 border-senior-gray flex items-center justify-center hover:bg-gray-200">
-                ➕
-            </button>
-            <button onclick="zoomOut()" class="w-16 h-16 bg-white text-senior-text text-[32px] font-bold rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.4)] border-2 border-senior-gray flex items-center justify-center hover:bg-gray-200">
-                ➖
-            </button>
+        <div class="absolute bottom-[160px] right-4 flex flex-col gap-4 z-40 md:right-8">
+            <button onclick="zoomIn()" class="w-16 h-16 bg-white text-senior-text text-[32px] font-bold rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.4)] border-2 border-senior-gray flex items-center justify-center">➕</button>
+            <button onclick="zoomOut()" class="w-16 h-16 bg-white text-senior-text text-[32px] font-bold rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.4)] border-2 border-senior-gray flex items-center justify-center">➖</button>
         </div>
 
-        <!-- 底部下載動作列 (Bottom Bar) -->
-        <div class="shrink-0 w-full bg-white shadow-[0_-5px_15px_rgba(0,0,0,0.15)] z-50 p-4 border-t-2 border-gray-300 flex gap-4">
-            <button onclick="downloadPDF()" class="flex-1 flex items-center justify-center gap-2 py-4 bg-senior-brown text-white text-[22px] font-bold rounded-xl shadow-md hover:bg-senior-brownHover transition-colors border-2 border-senior-brownHover">
-                📄 下載 PDF
+        <!-- 【新增獨立的 LINE 分享按鈕與排版】 -->
+        <div class="shrink-0 w-full bg-white shadow-[0_-5px_15px_rgba(0,0,0,0.15)] z-50 p-4 border-t-2 border-gray-300 flex flex-col gap-3" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
+            <button onclick="exportResume('pdf', 'share')" class="w-full flex items-center justify-center gap-2 py-4 bg-[#06C755] text-white text-[24px] font-bold rounded-xl shadow-md hover:bg-[#05A546] border-2 border-[#048b3b]">
+                💬 傳送 PDF 到 LINE (分享)
             </button>
-            <button onclick="downloadWord()" class="flex-1 flex items-center justify-center gap-2 py-4 bg-senior-green text-white text-[22px] font-bold rounded-xl shadow-md hover:bg-senior-greenHover transition-colors border-2 border-senior-greenHover">
-                📝 下載 Word
-            </button>
+            <div class="flex gap-3 w-full">
+                <button onclick="exportResume('pdf', 'download')" class="flex-1 flex items-center justify-center gap-2 py-3 bg-senior-brown text-white text-[20px] font-bold rounded-xl shadow-md border-2 border-senior-brownHover">
+                    📄 一般下載 PDF
+                </button>
+                <button onclick="exportResume('word', 'download')" class="flex-1 flex items-center justify-center gap-2 py-3 bg-senior-green text-white text-[20px] font-bold rounded-xl shadow-md border-2 border-senior-greenHover">
+                    📝 一般下載 Word
+                </button>
+            </div>
         </div>
     </div>
 
     <script>
         // ==========================================
-        // 1. 自動儲存草稿功能 (Auto-save)
+        // 1. 自動儲存草稿功能 (保持不變)
         // ==========================================
         function saveDraft() {
-            const draft = {
-                basicInputs: {},
-                checkboxes: {},
-                autoSections: [],
-                uiScale: uiScale
-            };
-            
-            // 儲存一般文字與區域輸入框
+            const draft = { basicInputs: {}, checkboxes: {}, autoSections: [], uiScale: uiScale };
             document.querySelectorAll('input[type="text"]:not([id^="in-auto-title"]), input[type="tel"], input[type="email"], textarea:not([id^="in-auto-content"])').forEach(input => {
                 if(input.id) draft.basicInputs[input.id] = input.value;
             });
-
-            // 儲存顯示/隱藏的勾選狀態
             document.querySelectorAll('input[type="checkbox"]').forEach(chk => {
                  if(chk.dataset.toggle) draft.checkboxes[chk.dataset.toggle] = chk.checked;
             });
-
-            // 儲存動態新增的自傳內容
             const autoBlocks = document.querySelectorAll('[id^="in-auto-block-"]');
             autoBlocks.forEach(block => {
                  const idNum = block.id.split('-').pop();
@@ -404,41 +369,23 @@
                  const content = document.getElementById(`in-auto-content-${idNum}`).value;
                  draft.autoSections.push({ title, content });
             });
-
-            localStorage.setItem('resumeDraft_v3', JSON.stringify(draft));
+            localStorage.setItem('resumeDraft_v4', JSON.stringify(draft));
         }
 
         function loadDraft() {
-            const draftStr = localStorage.getItem('resumeDraft_v3');
+            const draftStr = localStorage.getItem('resumeDraft_v4');
             if (!draftStr) return false;
             try {
                 const draft = JSON.parse(draftStr);
-                
-                // 還原字體縮放
-                if (draft.uiScale) {
-                    uiScale = draft.uiScale;
-                    document.documentElement.style.setProperty('--scale', uiScale);
-                }
-
-                // 還原一般輸入框
+                if (draft.uiScale) { uiScale = draft.uiScale; document.documentElement.style.setProperty('--scale', uiScale); }
                 for (const [id, value] of Object.entries(draft.basicInputs)) {
                     const el = document.getElementById(id);
-                    if (el) {
-                        el.value = value;
-                        el.dispatchEvent(new Event('input')); // 觸發更新預覽畫面
-                    }
+                    if (el) { el.value = value; el.dispatchEvent(new Event('input')); }
                 }
-
-                // 還原勾選狀態
                 for (const [toggleId, isChecked] of Object.entries(draft.checkboxes)) {
                     const chk = document.querySelector(`input[data-toggle="${toggleId}"]`);
-                    if (chk) {
-                        chk.checked = isChecked;
-                        chk.dispatchEvent(new Event('change'));
-                    }
+                    if (chk) { chk.checked = isChecked; chk.dispatchEvent(new Event('change')); }
                 }
-
-                // 還原自傳內容
                 if (draft.autoSections && draft.autoSections.length > 0) {
                     document.getElementById('auto-sections-container').innerHTML = '';
                     document.getElementById('out-auto-container').innerHTML = '';
@@ -446,89 +393,107 @@
                     draft.autoSections.forEach(sec => addAutoSection(sec.title, sec.content));
                 }
                 return true;
-            } catch(e) {
-                console.error("讀取草稿失敗", e);
-                return false;
+            } catch(e) { return false; }
+        }
+
+        document.addEventListener('input', (e) => { if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') saveDraft(); });
+        document.addEventListener('change', (e) => { if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') saveDraft(); });
+
+        // ==========================================
+        // 2. 匯出邏輯 (整合分享與直接下載)
+        // ==========================================
+        function exportResume(type, action) {
+            if (type === 'pdf') {
+                const element = document.getElementById('resume-preview');
+                const originalScale = currentScale; 
+                currentScale = 1; applyScale(); 
+                
+                const opt = {
+                    margin:       0,
+                    filename:     '幼教老師履歷.pdf',
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(element).output('blob').then((blob) => {
+                    currentScale = originalScale; applyScale();
+                    handleFileBlob(blob, '幼教老師履歷.pdf', action);
+                });
+            } else if (type === 'word') {
+                const previewNode = document.getElementById('resume-preview').cloneNode(true);
+                const hiddenElements = previewNode.querySelectorAll('[style*="display: none"]');
+                hiddenElements.forEach(el => el.remove());
+                
+                const previewHTML = previewNode.innerHTML;
+                const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>幼教老師履歷</title><style>body { font-family: 'Microsoft JhengHei', sans-serif; line-height: 1.8; color: #1A1A1A; } h1 { font-size: 26pt; font-weight: bold; border-bottom: 2pt solid #385723; padding-bottom: 8pt; text-align: center; color: #1A1A1A; } h2 { font-size: 18pt; font-weight: bold; background-color: #E8E4D9; color: #1A1A1A; padding: 8pt; margin-top: 20pt; margin-bottom: 12pt; } .section-content { white-space: pre-wrap; font-size: 14pt; margin-left: 10pt; } p, span, div { font-size: 14pt; } .contact-info { text-align: center; margin-bottom: 20pt; font-weight: bold; } </style></head><body>`;
+                const footer = "</body></html>";
+                
+                const blob = new Blob(['\ufeff', header + previewHTML + footer], { type: 'application/msword' });
+                handleFileBlob(blob, '幼教老師履歷.doc', action);
             }
         }
 
-        // 綁定全域監聽器，只要表單有變動就立刻存檔
-        document.addEventListener('input', (e) => {
-            if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') saveDraft();
-        });
-        document.addEventListener('change', (e) => {
-            if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') saveDraft();
-        });
-
-        // ==========================================
-        // 2. 原生分享功能 (Web Share API for Android/iOS)
-        // ==========================================
-        async function shareOrDownload(blob, filename) {
-            const file = new File([blob], filename, { type: blob.type });
-            
-            // 如果手機支援原生分享 (例如可傳到 LINE, Email, 雲端硬碟)
-            if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                try {
-                    await navigator.share({
-                        title: '我的幼教履歷',
-                        text: '這是我剛做好的履歷表，您可以直接開啟或轉傳。',
-                        files: [file]
-                    });
-                    return; // 分享成功即結束，不觸發強制下載
-                } catch (err) {
-                    console.log('使用者取消分享或發生錯誤，改為直接下載', err);
+        async function handleFileBlob(blob, filename, action) {
+            // 情境 1：使用者點擊「傳送 LINE (分享)」
+            if (action === 'share') {
+                const file = new File([blob], filename, { type: blob.type });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            title: '我的幼教履歷',
+                            text: '這是我剛做好的履歷表，您可以直接開啟或轉傳。',
+                            files: [file]
+                        });
+                        return; // 成功呼叫 Android 分享面板
+                    } catch (err) {
+                        console.log('分享取消', err);
+                    }
+                } else {
+                    // 若不支援原生分享（例如被 LINE 內建瀏覽器擋住）給予明確防呆提示
+                    alert('【系統提示】\n您的手機環境目前無法直接喚起 LINE 傳送檔案。\n\n請您點擊下方的「一般下載 PDF」把檔案存到手機裡，再自己打開 LINE 傳給親友喔！');
+                    return;
                 }
+            } 
+            
+            // 情境 2：使用者點擊「一般下載」或作為備案
+            if (action === 'download') {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement("a");
+                link.href = url; link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
             }
-
-            // 電腦版或不支援分享功能的手機：傳統下載模式
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement("a");
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
         }
 
-        // --- 介面字體縮放邏輯 ---
+        // ==========================================
+        // 3. UI 互動與視圖切換
+        // ==========================================
         let uiScale = 1;
         function changeUiFontSize(delta) {
-            if (delta === 0) {
-                uiScale = 1; 
-            } else {
-                uiScale += delta;
-                if (uiScale < 0.8) uiScale = 0.8;
-                if (uiScale > 1.8) uiScale = 1.8;
-            }
+            if (delta === 0) { uiScale = 1; } 
+            else { uiScale += delta; if (uiScale < 0.8) uiScale = 0.8; if (uiScale > 1.8) uiScale = 1.8; }
             document.documentElement.style.setProperty('--scale', uiScale);
-            saveDraft(); // 記住字體大小設定
+            saveDraft(); 
         }
 
-        // --- 視圖切換邏輯 ---
         function toggleView(viewName) {
             const editView = document.getElementById('view-edit');
             const previewView = document.getElementById('view-preview');
-            
             if (viewName === 'preview') {
-                editView.style.display = 'none';
-                previewView.style.display = 'flex';
-                window.scrollTo(0, 0);
-                setTimeout(adjustScale, 100); 
+                editView.style.display = 'none'; previewView.style.display = 'flex';
+                window.scrollTo(0, 0); setTimeout(adjustScale, 100); 
             } else {
-                previewView.style.display = 'none';
-                editView.style.display = 'block';
+                previewView.style.display = 'none'; editView.style.display = 'flex';
                 window.scrollTo(0, 0);
             }
         }
 
-        // --- 動態自傳區塊邏輯 ---
         let autoSectionCount = 0;
-
         function addAutoSection(titleText = "", contentText = "") {
-            autoSectionCount++;
-            const id = autoSectionCount;
-            
+            autoSectionCount++; const id = autoSectionCount;
             const formContainer = document.getElementById('auto-sections-container');
             const formBlock = document.createElement('div');
             formBlock.className = 'p-6 bg-[#FAFAFA] border-2 border-gray-300 rounded-xl relative';
@@ -539,15 +504,12 @@
                         <label class="block text-[20px] font-bold text-gray-600 mb-2">此段落的小標題：</label>
                         <input type="text" id="in-auto-title-${id}" value="${titleText}" class="w-full border-b-4 border-gray-400 focus:border-senior-green bg-transparent text-[24px] font-bold text-senior-text pb-2 px-2 outline-none" placeholder="例如：家庭背景">
                     </div>
-                    <button type="button" onclick="removeAutoSection(${id})" class="text-white bg-[#D32F2F] hover:bg-red-800 text-[20px] font-bold px-6 py-3 rounded-lg shadow-md w-full md:w-auto">
-                        🗑️ 刪除此段
-                    </button>
+                    <button type="button" onclick="removeAutoSection(${id})" class="text-white bg-[#D32F2F] hover:bg-red-800 text-[20px] font-bold px-6 py-3 rounded-lg shadow-md w-full md:w-auto">🗑️ 刪除此段</button>
                 </div>
                 <div>
                     <label class="block text-[20px] font-bold text-gray-600 mb-2">詳細內容：</label>
                     <textarea id="in-auto-content-${id}" rows="4" class="input-large leading-relaxed" placeholder="請在此輸入內容...">${contentText}</textarea>
-                </div>
-            `;
+                </div>`;
             formContainer.appendChild(formBlock);
 
             const previewContainer = document.getElementById('out-auto-container');
@@ -556,8 +518,7 @@
             previewBlock.style.marginBottom = '20px';
             previewBlock.innerHTML = `
                 <p id="out-auto-title-text-${id}" style="font-weight: bold; color: #1A1A1A; font-size: 20px; margin-bottom: 8px;">${titleText ? '【' + titleText + '】' : ''}</p>
-                <div class="section-content" id="out-auto-content-text-${id}">${contentText}</div>
-            `;
+                <div class="section-content" id="out-auto-content-text-${id}">${contentText}</div>`;
             previewContainer.appendChild(previewBlock);
 
             const titleInput = document.getElementById(`in-auto-title-${id}`);
@@ -565,12 +526,8 @@
             const titleOutput = document.getElementById(`out-auto-title-text-${id}`);
             const contentOutput = document.getElementById(`out-auto-content-text-${id}`);
 
-            titleInput.addEventListener('input', (e) => {
-                titleOutput.textContent = e.target.value ? `【${e.target.value}】` : '';
-            });
-            contentInput.addEventListener('input', (e) => {
-                contentOutput.textContent = e.target.value;
-            });
+            titleInput.addEventListener('input', (e) => { titleOutput.textContent = e.target.value ? `【${e.target.value}】` : ''; });
+            contentInput.addEventListener('input', (e) => { contentOutput.textContent = e.target.value; });
         }
 
         function removeAutoSection(id) {
@@ -579,17 +536,12 @@
             saveDraft();
         }
 
-        document.getElementById('btn-add-auto').addEventListener('click', () => {
-            addAutoSection("", "");
-            saveDraft();
-        });
+        document.getElementById('btn-add-auto').addEventListener('click', () => { addAutoSection("", ""); saveDraft(); });
 
-        // --- 基礎欄位雙向綁定邏輯 ---
         const inputs = document.querySelectorAll('[data-bind]');
         inputs.forEach(input => {
             input.addEventListener('input', function() {
-                const targetId = this.getAttribute('data-bind');
-                const targetElement = document.getElementById(targetId);
+                const targetElement = document.getElementById(this.getAttribute('data-bind'));
                 if (targetElement) { targetElement.textContent = this.value; }
             });
         });
@@ -597,8 +549,7 @@
         const titleInputs = document.querySelectorAll('[data-bind-title]');
         titleInputs.forEach(input => {
             input.addEventListener('input', function() {
-                const targetId = this.getAttribute('data-bind-title');
-                const targetElement = document.getElementById(targetId);
+                const targetElement = document.getElementById(this.getAttribute('data-bind-title'));
                 if (targetElement) { targetElement.textContent = this.value; }
             });
         });
@@ -606,17 +557,12 @@
         const toggles = document.querySelectorAll('[data-toggle]');
         toggles.forEach(toggle => {
             toggle.addEventListener('change', function() {
-                const targetId = this.getAttribute('data-toggle');
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    targetElement.style.display = this.checked ? 'block' : 'none';
-                }
+                const targetElement = document.getElementById(this.getAttribute('data-toggle'));
+                if (targetElement) { targetElement.style.display = this.checked ? 'block' : 'none'; }
             });
         });
 
-        // --- 預覽縮放邏輯 (長輩友善版) ---
         let currentScale = 1;
-
         function applyScale() {
             const wrapper = document.getElementById('scale-wrapper');
             const previewView = document.getElementById('view-preview');
@@ -624,32 +570,18 @@
             
             const a4Width = 794;
             wrapper.style.transform = `scale(${currentScale})`;
-            
             if (currentScale <= 1) {
                 wrapper.style.marginBottom = `-${297 * 3.78 * (1 - currentScale)}px`;
-                if (window.innerWidth <= 768) {
-                    wrapper.style.marginRight = `${a4Width * (currentScale - 1)}px`;
-                } else {
-                    wrapper.style.marginRight = '0';
-                }
+                if (window.innerWidth <= 768) { wrapper.style.marginRight = `${a4Width * (currentScale - 1)}px`; } 
+                else { wrapper.style.marginRight = '0'; }
             } else {
                 wrapper.style.marginBottom = `${297 * 3.78 * (currentScale - 1)}px`;
                 wrapper.style.marginRight = `${a4Width * (currentScale - 1)}px`;
             }
         }
 
-        function zoomIn() {
-            currentScale += 0.15;
-            if (currentScale > 2.5) currentScale = 2.5; 
-            applyScale();
-        }
-
-        function zoomOut() {
-            currentScale -= 0.15;
-            if (currentScale < 0.4) currentScale = 0.4; 
-            applyScale();
-        }
-
+        function zoomIn() { currentScale += 0.15; if (currentScale > 2.5) currentScale = 2.5; applyScale(); }
+        function zoomOut() { currentScale -= 0.15; if (currentScale < 0.4) currentScale = 0.4; applyScale(); }
         function adjustScale() {
             const wrapper = document.getElementById('scale-wrapper');
             const previewView = document.getElementById('view-preview');
@@ -657,84 +589,18 @@
 
             const containerWidth = wrapper.parentElement.clientWidth;
             const a4Width = 794; 
-            
             if (containerWidth < a4Width + 40) {
                 currentScale = (containerWidth - 20) / a4Width;
-                if (window.innerWidth <= 768) {
-                    currentScale = Math.max(currentScale, 0.85); 
-                }
-            } else {
-                currentScale = 1;
-            }
+                if (window.innerWidth <= 768) { currentScale = Math.max(currentScale, 0.85); }
+            } else { currentScale = 1; }
             applyScale();
         }
 
-        // --- 匯出 PDF (整合原生分享) ---
-        function downloadPDF() {
-            const element = document.getElementById('resume-preview');
-            const originalScale = currentScale; 
-            
-            currentScale = 1;
-            applyScale(); 
-            
-            const opt = {
-                margin:       0,
-                filename:     '幼教老師履歷.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            // 輸出 Blob 物件交給 Share API 處理
-            html2pdf().set(opt).from(element).output('blob').then((blob) => {
-                currentScale = originalScale;
-                applyScale();
-                shareOrDownload(blob, '幼教老師履歷.pdf');
-            });
-        }
-
-        // --- 匯出 Word (整合原生分享) ---
-        function downloadWord() {
-            const previewNode = document.getElementById('resume-preview').cloneNode(true);
-            const hiddenElements = previewNode.querySelectorAll('[style*="display: none"]');
-            hiddenElements.forEach(el => el.remove());
-            
-            const previewHTML = previewNode.innerHTML;
-            const header = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' 
-                      xmlns:w='urn:schemas-microsoft-com:office:word' 
-                      xmlns='http://www.w3.org/TR/REC-html40'>
-                <head><meta charset='utf-8'><title>幼教老師履歷</title>
-                <style>
-                    body { font-family: 'Microsoft JhengHei', sans-serif; line-height: 1.8; color: #1A1A1A; }
-                    h1 { font-size: 26pt; font-weight: bold; border-bottom: 2pt solid #385723; padding-bottom: 8pt; text-align: center; color: #1A1A1A; }
-                    h2 { font-size: 18pt; font-weight: bold; background-color: #E8E4D9; color: #1A1A1A; padding: 8pt; margin-top: 20pt; margin-bottom: 12pt; }
-                    .section-content { white-space: pre-wrap; font-size: 14pt; margin-left: 10pt; }
-                    p, span, div { font-size: 14pt; }
-                    .contact-info { text-align: center; margin-bottom: 20pt; font-weight: bold; }
-                </style></head><body>
-            `;
-            const footer = "</body></html>";
-            
-            // 轉換為 Blob 物件交給 Share API 處理
-            const blob = new Blob(['\ufeff', header + previewHTML + footer], { type: 'application/msword' });
-            shareOrDownload(blob, '幼教老師履歷.doc');
-        }
-
-        // ==========================================
-        // 3. 系統初始化 (載入草稿或預設值)
-        // ==========================================
         window.addEventListener('DOMContentLoaded', () => {
-            const hasDraft = loadDraft();
-            
-            // 如果沒有記憶的草稿，才幫長輩填上預設的自傳範例
-            if (!hasDraft) {
-                const initialAutoSections = [
-                    { title: "家庭背景與個人特質", content: "我生長在一個充滿愛的家庭，這培養了我耐心、細心且溫暖的特質。對於事物總是抱持著正向的態度，並且喜歡與人互動，這樣的性格讓我在面對幼兒時，總能以最大的包容和同理心去引導他們。" },
-                    { title: "求學與實習歷程", content: "在大學幼教系期間，我扎實學習了幼兒發展與教學法。於「快樂蘋果幼兒園」的實習經驗，更是讓我將理論與實務結合，不僅學會了如何帶領班級，也體會到親師溝通的重要性。" },
-                    { title: "對幼教的熱忱與未來期許", content: "我相信「教育無他，唯愛與榜樣」。成為一名幼教老師是我的志向。若有機會加入貴園所，我期許自己能不斷精進專業，用心陪伴每一位孩子，讓他們在安全、快樂的環境中探索世界。" }
-                ];
-                initialAutoSections.forEach(sec => addAutoSection(sec.title, sec.content));
+            if (!loadDraft()) {
+                addAutoSection("家庭背景與個人特質", "我生長在一個充滿愛的家庭，這培養了我耐心、細心且溫暖的特質。對於事物總是抱持著正向的態度，並且喜歡與人互動，這樣的性格讓我在面對幼兒時，總能以最大的包容和同理心去引導他們。");
+                addAutoSection("求學與實習歷程", "在大學幼教系期間，我扎實學習了幼兒發展與教學法。於「快樂蘋果幼兒園」的實習經驗，更是讓我將理論與實務結合，不僅學會了如何帶領班級，也體會到親師溝通的重要性。");
+                addAutoSection("對幼教的熱忱與未來期許", "我相信「教育無他，唯愛與榜樣」。成為一名幼教老師是我的志向。若有機會加入貴園所，我期許自己能不斷精進專業，用心陪伴每一位孩子，讓他們在安全、快樂的環境中探索世界。");
             }
         });
     </script>
