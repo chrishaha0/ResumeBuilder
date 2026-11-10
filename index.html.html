@@ -327,22 +327,24 @@
         </div>
         </div>
 
-        <!-- 【重大修正】大幅調高 bottom 數值到 240px，並提高 z-index 到 50，加入 active 點擊回饋 -->
         <div class="absolute bottom-[240px] right-4 flex flex-col gap-4 z-50 md:right-8">
             <button onclick="zoomIn()" class="w-16 h-16 bg-white text-senior-text text-[32px] font-bold rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.4)] border-2 border-senior-gray flex items-center justify-center hover:bg-gray-100 active:bg-gray-300 active:scale-95 transition-all">➕</button>
             <button onclick="zoomOut()" class="w-16 h-16 bg-white text-senior-text text-[32px] font-bold rounded-full shadow-[0_5px_15px_rgba(0,0,0,0.4)] border-2 border-senior-gray flex items-center justify-center hover:bg-gray-100 active:bg-gray-300 active:scale-95 transition-all">➖</button>
         </div>
 
+        <!-- 【全新設計】把分享按鈕改為「複製純文字」，這對跳轉 LINE 編輯最友善 -->
         <div class="shrink-0 w-full bg-white shadow-[0_-5px_15px_rgba(0,0,0,0.15)] z-50 p-4 border-t-2 border-gray-300 flex flex-col gap-3 relative" style="padding-bottom: calc(1rem + env(safe-area-inset-bottom));">
-            <button id="btn-share-line" onclick="exportResume('pdf', 'share')" class="w-full flex items-center justify-center gap-2 py-4 bg-[#06C755] text-white text-[24px] font-bold rounded-xl shadow-md hover:bg-[#05A546] border-2 border-[#048b3b] transition-all">
-                💬 傳送 PDF 到 LINE (分享)
+            
+            <button id="btn-copy-text" onclick="copyResumeText()" class="w-full flex items-center justify-center gap-2 py-4 bg-[#06C755] text-white text-[24px] font-bold rounded-xl shadow-md active:scale-95 hover:bg-[#05A546] border-2 border-[#048b3b] transition-all">
+                📋 複製為純文字 (去 LINE 貼上編輯)
             </button>
+
             <div class="flex gap-3 w-full">
-                <button id="btn-dl-pdf" onclick="exportResume('pdf', 'download')" class="flex-1 flex items-center justify-center gap-2 py-3 bg-senior-brown text-white text-[20px] font-bold rounded-xl shadow-md border-2 border-senior-brownHover transition-all">
-                    📄 一般下載 PDF
+                <button id="btn-dl-pdf" onclick="exportResume('pdf')" class="flex-1 flex items-center justify-center gap-2 py-3 bg-senior-brown text-white text-[20px] font-bold rounded-xl shadow-md border-2 border-senior-brownHover active:scale-95 transition-all">
+                    📄 下載 PDF
                 </button>
-                <button id="btn-dl-word" onclick="exportResume('word', 'download')" class="flex-1 flex items-center justify-center gap-2 py-3 bg-senior-green text-white text-[20px] font-bold rounded-xl shadow-md border-2 border-senior-greenHover transition-all">
-                    📝 一般下載 Word
+                <button id="btn-dl-word" onclick="exportResume('word')" class="flex-1 flex items-center justify-center gap-2 py-3 bg-senior-green text-white text-[20px] font-bold rounded-xl shadow-md border-2 border-senior-greenHover active:scale-95 transition-all">
+                    📝 下載 Word
                 </button>
             </div>
         </div>
@@ -398,7 +400,69 @@
         document.addEventListener('change', (e) => { if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') saveDraft(); });
 
         // ==========================================
-        // 2. 強化版匯出與分享邏輯
+        // 2. 【全新功能】複製純文字，完美解決分享受限問題
+        // ==========================================
+        function copyResumeText() {
+            let text = `【幼教老師履歷】\n\n`;
+            
+            // 抓取基本資料
+            if (document.getElementById('chk-basic').checked) {
+                text += `姓名：${document.getElementById('in-name').value}\n`;
+                text += `電話：${document.getElementById('in-phone').value}\n`;
+                text += `Email：${document.getElementById('in-email').value}\n`;
+                text += `地址：${document.getElementById('in-address').value}\n\n`;
+            }
+
+            // 抓取固定段落
+            const sections = [
+                { chk: 'chk-objective', title: 'in-title-objective', content: 'in-objective' },
+                { chk: 'chk-education', title: 'in-title-education', content: 'in-education' },
+                { chk: 'chk-certs', title: 'in-title-certs', content: 'in-certs' },
+                { chk: 'chk-experience', title: 'in-title-experience', content: 'in-experience' },
+                { chk: 'chk-skills', title: 'in-title-skills', content: 'in-skills' }
+            ];
+
+            sections.forEach(sec => {
+                if (document.getElementById(sec.chk).checked) {
+                    text += `【${document.getElementById(sec.title).value}】\n`;
+                    text += `${document.getElementById(sec.content).value}\n\n`;
+                }
+            });
+
+            // 抓取動態自傳
+            if (document.getElementById('chk-auto').checked) {
+                text += `【${document.getElementById('in-title-auto').value}】\n`;
+                const autoBlocks = document.querySelectorAll('[id^="in-auto-block-"]');
+                autoBlocks.forEach(block => {
+                     const idNum = block.id.split('-').pop();
+                     const title = document.getElementById(`in-auto-title-${idNum}`).value;
+                     const content = document.getElementById(`in-auto-content-${idNum}`).value;
+                     if (title) text += `〈${title}〉\n`;
+                     text += `${content}\n\n`;
+                });
+            }
+
+            // 執行複製動作
+            navigator.clipboard.writeText(text.trim()).then(() => {
+                const btn = document.getElementById('btn-copy-text');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ 已經複製成功！';
+                btn.classList.replace('bg-[#06C755]', 'bg-senior-greenHover'); 
+                
+                alert('【系統提示】\n履歷文字已經完美複製下來了！\n\n請您直接打開 LINE 對話框，長按輸入區並選擇「貼上」，就可以在 LINE 裡面繼續編輯並傳送囉！');
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.classList.replace('bg-senior-greenHover', 'bg-[#06C755]');
+                }, 3000);
+            }).catch(err => {
+                alert('複製失敗，您的手機瀏覽器可能不支援此功能，請使用下方下載按鈕。');
+            });
+        }
+
+
+        // ==========================================
+        // 3. 傳統匯出邏輯 (PDF & Word)
         // ==========================================
         function setButtonsLoading(isLoading, btnId, originalText) {
             const btn = document.getElementById(btnId);
@@ -413,12 +477,9 @@
             }
         }
 
-        function exportResume(type, action) {
-            let btnId = '';
-            let originalText = '';
-            if (action === 'share') { btnId = 'btn-share-line'; originalText = '💬 傳送 PDF 到 LINE (分享)'; }
-            else if (type === 'pdf') { btnId = 'btn-dl-pdf'; originalText = '📄 一般下載 PDF'; }
-            else { btnId = 'btn-dl-word'; originalText = '📝 一般下載 Word'; }
+        function exportResume(type) {
+            let btnId = type === 'pdf' ? 'btn-dl-pdf' : 'btn-dl-word';
+            let originalText = type === 'pdf' ? '📄 下載 PDF' : '📝 下載 Word';
 
             setButtonsLoading(true, btnId, originalText);
 
@@ -439,7 +500,7 @@
                     html2pdf().set(opt).from(element).output('blob').then((blob) => {
                         currentScale = originalScale; applyScale();
                         setButtonsLoading(false, btnId, originalText);
-                        handleFileBlob(blob, '幼教老師履歷.pdf', action);
+                        executeDownload(blob, '幼教老師履歷.pdf');
                     });
                 } else if (type === 'word') {
                     const previewNode = element.cloneNode(true);
@@ -453,38 +514,9 @@
                     const blob = new Blob(['\ufeff', header + previewHTML + footer], { type: 'application/msword' });
                     currentScale = originalScale; applyScale();
                     setButtonsLoading(false, btnId, originalText);
-                    handleFileBlob(blob, '幼教老師履歷.doc', action);
+                    executeDownload(blob, '幼教老師履歷.doc');
                 }
             }, 300);
-        }
-
-        async function handleFileBlob(blob, filename, action) {
-            if (action === 'share') {
-                const file = new File([blob], filename, { type: blob.type });
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            title: '我的幼教履歷',
-                            text: '這是我剛做好的履歷表，您可以直接開啟或轉傳。',
-                            files: [file]
-                        });
-                        return; 
-                    } catch (err) {
-                        console.log('分享取消或逾時', err);
-                        alert('【系統提示】\n您的手機因為安全限制無法直接跳轉分享畫面。\n\n系統已自動幫您切換為「一般下載」，檔案稍後會存入手機，請您再自行打開 LINE 傳送檔案喔！');
-                        executeDownload(blob, filename);
-                        return;
-                    }
-                } else {
-                    alert('【系統提示】\n您現在使用的瀏覽器環境無法直接喚起 LINE。\n\n系統已自動幫您切換為「一般下載」，檔案稍後會存入手機，請您自己打開 LINE 傳給親友喔！');
-                    executeDownload(blob, filename);
-                    return;
-                }
-            } 
-            
-            if (action === 'download') {
-                executeDownload(blob, filename);
-            }
         }
 
         function executeDownload(blob, filename) {
@@ -498,7 +530,7 @@
         }
 
         // ==========================================
-        // 3. UI 互動與視圖切換
+        // 4. UI 互動與視圖切換
         // ==========================================
         let uiScale = 1;
         function changeUiFontSize(delta) {
