@@ -1,3 +1,15 @@
+這就為您將剛剛提到的「自動儲存草稿 (Auto-Save)」**與**「Android 系統原生分享 (Web Share API)」功能，完美整合進您目前的這份程式碼中！
+
+我幫您改寫了下方的 `<script>` 區塊，加入了這兩大功能。現在您**只要複製下方完整的 HTML 程式碼，全部取代您原本的檔案**，就能立刻解決 Android 下載跳轉失敗與跨平台編輯的問題了。
+
+### 這次整合的亮點：
+
+1. **打字即存檔**：只要在任何輸入框打字、或者調整字體大小，系統都會自動記憶在手機的瀏覽器裡。不小心按到返回鍵也不怕資料不見。
+2. **LINE / 雲端硬碟分享**：點擊「下載 Word/PDF」時，如果是用手機操作，會優先彈出 Android 原生的「分享選單」，長輩可以直接點選「傳送到 LINE (Keep)」或「Email」，這樣就能輕鬆跨平台到電腦上繼續用 Word 編輯了！
+
+以下是完整的程式碼：
+
+```html
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -133,9 +145,9 @@
             <!-- 1. 基本資料 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" data-bind-title="out-title-basic" value="一、基本資料" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-basic" data-bind-title="out-title-basic" value="一、基本資料" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300 transition-colors">
-                        <input type="checkbox" data-toggle="preview-sec-basic" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-basic" data-toggle="preview-sec-basic" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -164,9 +176,9 @@
             <!-- 2. 求職目標 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" data-bind-title="out-title-objective" value="二、求職目標" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-objective" data-bind-title="out-title-objective" value="二、求職目標" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" data-toggle="preview-sec-objective" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-objective" data-toggle="preview-sec-objective" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -179,9 +191,9 @@
             <!-- 3. 學歷 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" data-bind-title="out-title-education" value="三、最高學歷" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-education" data-bind-title="out-title-education" value="三、最高學歷" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" data-toggle="preview-sec-education" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-education" data-toggle="preview-sec-education" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -194,9 +206,9 @@
             <!-- 4. 專業證照 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" data-bind-title="out-title-certs" value="四、專業證照" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-certs" data-bind-title="out-title-certs" value="四、專業證照" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" data-toggle="preview-sec-certs" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-certs" data-toggle="preview-sec-certs" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -212,9 +224,9 @@
             <!-- 5. 經歷 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" data-bind-title="out-title-experience" value="五、工作 / 實習經歷" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-experience" data-bind-title="out-title-experience" value="五、工作 / 實習經歷" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" data-toggle="preview-sec-experience" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-experience" data-toggle="preview-sec-experience" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -226,7 +238,7 @@
 
 主要負責內容：
 1. 協助主教老師進行班級經營與幼兒生活常規建立。
-2. 規劃並執行每週的主題教學活動 (例如：繪本導讀、美勞創作)。
+​2. 規劃並執行每週的主題教學活動 (例如：繪本導讀、美勞創作)。
 3. 協助幼兒園節慶活動的場地佈置與道具準備。
 4. 與家長進行日常親師溝通，並負責撰寫幼兒聯絡簿。</textarea>
                 </div>
@@ -235,9 +247,9 @@
             <!-- 6. 專長與技能 -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" data-bind-title="out-title-skills" value="六、專長與技能" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-skills" data-bind-title="out-title-skills" value="六、專長與技能" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" data-toggle="preview-sec-skills" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-skills" data-toggle="preview-sec-skills" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -252,9 +264,9 @@
             <!-- 7. 自傳 (動態區塊) -->
             <section class="bg-senior-card p-6 md:p-8 rounded-2xl shadow-lg border-2 border-gray-200">
                 <div class="flex flex-col md:flex-row md:items-center justify-between border-b-2 border-gray-300 pb-4 mb-6 gap-4">
-                    <input type="text" data-bind-title="out-title-auto" value="七、個人自傳" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
+                    <input type="text" id="in-title-auto" data-bind-title="out-title-auto" value="七、個人自傳" class="text-[28px] md:text-[32px] font-bold text-senior-green bg-transparent border-0 border-b-2 border-dashed border-gray-400 focus:ring-0 w-full md:w-2/3 p-0">
                     <label class="flex items-center space-x-3 cursor-pointer bg-senior-lightGray px-4 py-3 rounded-xl hover:bg-gray-300">
-                        <input type="checkbox" data-toggle="preview-sec-auto" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
+                        <input type="checkbox" id="chk-auto" data-toggle="preview-sec-auto" checked class="w-8 h-8 rounded text-senior-green border-2 border-senior-gray focus:ring-senior-green">
                         <span class="text-[22px] font-bold text-senior-text">在履歷中顯示</span>
                     </label>
                 </div>
@@ -330,7 +342,7 @@
 
 主要負責內容：
 1. 協助主教老師進行班級經營與幼兒生活常規建立。
-2. 規劃並執行每週的主題教學活動 (例如：繪本導讀、美勞創作)。
+​2. 規劃並執行每週的主題教學活動 (例如：繪本導讀、美勞創作)。
 3. 協助幼兒園節慶活動的場地佈置與道具準備。
 4. 與家長進行日常親師溝通，並負責撰寫幼兒聯絡簿。</div>
                 </div>
@@ -375,19 +387,134 @@
     </div>
 
     <script>
-        // --- 介面字體縮放邏輯 (新增) ---
+        // ==========================================
+        // 1. 自動儲存草稿功能 (Auto-save)
+        // ==========================================
+        function saveDraft() {
+            const draft = {
+                basicInputs: {},
+                checkboxes: {},
+                autoSections: [],
+                uiScale: uiScale
+            };
+            
+            // 儲存一般文字與區域輸入框
+            document.querySelectorAll('input[type="text"]:not([id^="in-auto-title"]), input[type="tel"], input[type="email"], textarea:not([id^="in-auto-content"])').forEach(input => {
+                if(input.id) draft.basicInputs[input.id] = input.value;
+            });
+
+            // 儲存顯示/隱藏的勾選狀態
+            document.querySelectorAll('input[type="checkbox"]').forEach(chk => {
+                 if(chk.dataset.toggle) draft.checkboxes[chk.dataset.toggle] = chk.checked;
+            });
+
+            // 儲存動態新增的自傳內容
+            const autoBlocks = document.querySelectorAll('[id^="in-auto-block-"]');
+            autoBlocks.forEach(block => {
+                 const idNum = block.id.split('-').pop();
+                 const title = document.getElementById(`in-auto-title-${idNum}`).value;
+                 const content = document.getElementById(`in-auto-content-${idNum}`).value;
+                 draft.autoSections.push({ title, content });
+            });
+
+            localStorage.setItem('resumeDraft_v3', JSON.stringify(draft));
+        }
+
+        function loadDraft() {
+            const draftStr = localStorage.getItem('resumeDraft_v3');
+            if (!draftStr) return false;
+            try {
+                const draft = JSON.parse(draftStr);
+                
+                // 還原字體縮放
+                if (draft.uiScale) {
+                    uiScale = draft.uiScale;
+                    document.documentElement.style.setProperty('--scale', uiScale);
+                }
+
+                // 還原一般輸入框
+                for (const [id, value] of Object.entries(draft.basicInputs)) {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.value = value;
+                        el.dispatchEvent(new Event('input')); // 觸發更新預覽畫面
+                    }
+                }
+
+                // 還原勾選狀態
+                for (const [toggleId, isChecked] of Object.entries(draft.checkboxes)) {
+                    const chk = document.querySelector(`input[data-toggle="${toggleId}"]`);
+                    if (chk) {
+                        chk.checked = isChecked;
+                        chk.dispatchEvent(new Event('change'));
+                    }
+                }
+
+                // 還原自傳內容
+                if (draft.autoSections && draft.autoSections.length > 0) {
+                    document.getElementById('auto-sections-container').innerHTML = '';
+                    document.getElementById('out-auto-container').innerHTML = '';
+                    autoSectionCount = 0; 
+                    draft.autoSections.forEach(sec => addAutoSection(sec.title, sec.content));
+                }
+                return true;
+            } catch(e) {
+                console.error("讀取草稿失敗", e);
+                return false;
+            }
+        }
+
+        // 綁定全域監聽器，只要表單有變動就立刻存檔
+        document.addEventListener('input', (e) => {
+            if(e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') saveDraft();
+        });
+        document.addEventListener('change', (e) => {
+            if(e.target.tagName === 'INPUT' && e.target.type === 'checkbox') saveDraft();
+        });
+
+        // ==========================================
+        // 2. 原生分享功能 (Web Share API for Android/iOS)
+        // ==========================================
+        async function shareOrDownload(blob, filename) {
+            const file = new File([blob], filename, { type: blob.type });
+            
+            // 如果手機支援原生分享 (例如可傳到 LINE, Email, 雲端硬碟)
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        title: '我的幼教履歷',
+                        text: '這是我剛做好的履歷表，您可以直接開啟或轉傳。',
+                        files: [file]
+                    });
+                    return; // 分享成功即結束，不觸發強制下載
+                } catch (err) {
+                    console.log('使用者取消分享或發生錯誤，改為直接下載', err);
+                }
+            }
+
+            // 電腦版或不支援分享功能的手機：傳統下載模式
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // --- 介面字體縮放邏輯 ---
         let uiScale = 1;
         function changeUiFontSize(delta) {
             if (delta === 0) {
-                uiScale = 1; // 恢復標準大小
+                uiScale = 1; 
             } else {
                 uiScale += delta;
-                // 限制縮放範圍，避免過小看不見或過大導致跑版
                 if (uiScale < 0.8) uiScale = 0.8;
                 if (uiScale > 1.8) uiScale = 1.8;
             }
-            // 透過更新 CSS 變數，瞬間套用到整個表單的字體與留白
             document.documentElement.style.setProperty('--scale', uiScale);
+            saveDraft(); // 記住字體大小設定
         }
 
         // --- 視圖切換邏輯 ---
@@ -398,8 +525,8 @@
             if (viewName === 'preview') {
                 editView.style.display = 'none';
                 previewView.style.display = 'flex';
-                window.scrollTo(0, 0); // 捲動到最上方
-                setTimeout(adjustScale, 100); // 重算縮放
+                window.scrollTo(0, 0);
+                setTimeout(adjustScale, 100); 
             } else {
                 previewView.style.display = 'none';
                 editView.style.display = 'block';
@@ -414,7 +541,6 @@
             autoSectionCount++;
             const id = autoSectionCount;
             
-            // 1. 新增到左側表單 (字體變大，按鈕變大)
             const formContainer = document.getElementById('auto-sections-container');
             const formBlock = document.createElement('div');
             formBlock.className = 'p-6 bg-[#FAFAFA] border-2 border-gray-300 rounded-xl relative';
@@ -436,7 +562,6 @@
             `;
             formContainer.appendChild(formBlock);
 
-            // 2. 新增到右側預覽
             const previewContainer = document.getElementById('out-auto-container');
             const previewBlock = document.createElement('div');
             previewBlock.id = `out-auto-block-${id}`;
@@ -447,7 +572,6 @@
             `;
             previewContainer.appendChild(previewBlock);
 
-            // 3. 綁定雙向事件
             const titleInput = document.getElementById(`in-auto-title-${id}`);
             const contentInput = document.getElementById(`in-auto-content-${id}`);
             const titleOutput = document.getElementById(`out-auto-title-text-${id}`);
@@ -464,19 +588,12 @@
         function removeAutoSection(id) {
             document.getElementById(`in-auto-block-${id}`)?.remove();
             document.getElementById(`out-auto-block-${id}`)?.remove();
+            saveDraft();
         }
-
-        // 初始化預設的自傳段落
-        const initialAutoSections = [
-            { title: "家庭背景與個人特質", content: "我生長在一個充滿愛的家庭，這培養了我耐心、細心且溫暖的特質。對於事物總是抱持著正向的態度，並且喜歡與人互動，這樣的性格讓我在面對幼兒時，總能以最大的包容和同理心去引導他們。" },
-            { title: "求學與實習歷程", content: "在大學幼教系期間，我扎實學習了幼兒發展與教學法。於「快樂蘋果幼兒園」的實習經驗，更是讓我將理論與實務結合，不僅學會了如何帶領班級，也體會到親師溝通的重要性。" },
-            { title: "對幼教的熱忱與未來期許", content: "我相信「教育無他，唯愛與榜樣」。成為一名幼教老師是我的志向。若有機會加入貴園所，我期許自己能不斷精進專業，用心陪伴每一位孩子，讓他們在安全、快樂的環境中探索世界。" }
-        ];
-
-        initialAutoSections.forEach(sec => addAutoSection(sec.title, sec.content));
 
         document.getElementById('btn-add-auto').addEventListener('click', () => {
             addAutoSection("", "");
+            saveDraft();
         });
 
         // --- 基礎欄位雙向綁定邏輯 ---
@@ -498,7 +615,6 @@
             });
         });
 
-        // --- 顯示/隱藏區塊邏輯 ---
         const toggles = document.querySelectorAll('[data-toggle]');
         toggles.forEach(toggle => {
             toggle.addEventListener('change', function() {
@@ -510,7 +626,7 @@
             });
         });
 
-        // --- 縮放邏輯 (長輩友善版：手動控制取代純自動) ---
+        // --- 預覽縮放邏輯 (長輩友善版) ---
         let currentScale = 1;
 
         function applyScale() {
@@ -521,7 +637,6 @@
             const a4Width = 794;
             wrapper.style.transform = `scale(${currentScale})`;
             
-            // 動態修剪因 scale 產生的虛擬佔位留白，確保捲軸長度正確
             if (currentScale <= 1) {
                 wrapper.style.marginBottom = `-${297 * 3.78 * (1 - currentScale)}px`;
                 if (window.innerWidth <= 768) {
@@ -537,31 +652,28 @@
 
         function zoomIn() {
             currentScale += 0.15;
-            if (currentScale > 2.5) currentScale = 2.5; // 設定放大上限
+            if (currentScale > 2.5) currentScale = 2.5; 
             applyScale();
         }
 
         function zoomOut() {
             currentScale -= 0.15;
-            if (currentScale < 0.4) currentScale = 0.4; // 設定縮小下限
+            if (currentScale < 0.4) currentScale = 0.4; 
             applyScale();
         }
 
         function adjustScale() {
             const wrapper = document.getElementById('scale-wrapper');
             const previewView = document.getElementById('view-preview');
-            
-            // 只有在預覽模式下才計算
             if (previewView.style.display === 'none' || !wrapper || wrapper.offsetWidth === 0) return; 
 
             const containerWidth = wrapper.parentElement.clientWidth;
-            const a4Width = 794; // 210mm 轉換約等於 794px
+            const a4Width = 794; 
             
-            // 首次進入預覽時，給予一個適當的預設比例
             if (containerWidth < a4Width + 40) {
                 currentScale = (containerWidth - 20) / a4Width;
                 if (window.innerWidth <= 768) {
-                    currentScale = Math.max(currentScale, 0.85); // 手機預設不要太小
+                    currentScale = Math.max(currentScale, 0.85); 
                 }
             } else {
                 currentScale = 1;
@@ -569,15 +681,11 @@
             applyScale();
         }
 
-        // 移除 window.resize 自動縮放，避免打斷長輩手動調整好的比例
-        // window.addEventListener('resize', adjustScale);
-
-        // --- 匯出 PDF ---
+        // --- 匯出 PDF (整合原生分享) ---
         function downloadPDF() {
             const element = document.getElementById('resume-preview');
-            const originalScale = currentScale; // 記住使用者目前的縮放比例
+            const originalScale = currentScale; 
             
-            // 下載前強制恢復 1 倍大小以確保 PDF 畫質與排版
             currentScale = 1;
             applyScale(); 
             
@@ -589,14 +697,15 @@
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                // 下載完成後，恢復長輩原本設定的縮放比例
+            // 輸出 Blob 物件交給 Share API 處理
+            html2pdf().set(opt).from(element).output('blob').then((blob) => {
                 currentScale = originalScale;
                 applyScale();
+                shareOrDownload(blob, '幼教老師履歷.pdf');
             });
         }
 
-        // --- 匯出 Word ---
+        // --- 匯出 Word (整合原生分享) ---
         function downloadWord() {
             const previewNode = document.getElementById('resume-preview').cloneNode(true);
             const hiddenElements = previewNode.querySelectorAll('[style*="display: none"]');
@@ -619,16 +728,29 @@
             `;
             const footer = "</body></html>";
             
+            // 轉換為 Blob 物件交給 Share API 處理
             const blob = new Blob(['\ufeff', header + previewHTML + footer], { type: 'application/msword' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = '幼教老師履歷.doc';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
+            shareOrDownload(blob, '幼教老師履歷.doc');
         }
+
+        // ==========================================
+        // 3. 系統初始化 (載入草稿或預設值)
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', () => {
+            const hasDraft = loadDraft();
+            
+            // 如果沒有記憶的草稿，才幫長輩填上預設的自傳範例
+            if (!hasDraft) {
+                const initialAutoSections = [
+                    { title: "家庭背景與個人特質", content: "我生長在一個充滿愛的家庭，這培養了我耐心、細心且溫暖的特質。對於事物總是抱持著正向的態度，並且喜歡與人互動，這樣的性格讓我在面對幼兒時，總能以最大的包容和同理心去引導他們。" },
+                    { title: "求學與實習歷程", content: "在大學幼教系期間，我扎實學習了幼兒發展與教學法。於「快樂蘋果幼兒園」的實習經驗，更是讓我將理論與實務結合，不僅學會了如何帶領班級，也體會到親師溝通的重要性。" },
+                    { title: "對幼教的熱忱與未來期許", content: "我相信「教育無他，唯愛與榜樣」。成為一名幼教老師是我的志向。若有機會加入貴園所，我期許自己能不斷精進專業，用心陪伴每一位孩子，讓他們在安全、快樂的環境中探索世界。" }
+                ];
+                initialAutoSections.forEach(sec => addAutoSection(sec.title, sec.content));
+            }
+        });
     </script>
 </body>
 </html>
+
+```
